@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { GlobalStyle } from './styles'
+import { RootState } from './store'
+import { useDispatch, useSelector } from 'react-redux'
+import { favoritar } from './store/reducers/favoritos'
+
 import Header from './components/Header'
 import Produtos from './containers/Produtos'
-
-import { GlobalStyle } from './styles'
-import { Provider } from 'react-redux'
-import { store } from './store'
 
 export type Produto = {
   id: number
@@ -14,14 +14,21 @@ export type Produto = {
 }
 
 function App() {
+  const dispatch = useDispatch()
+  const favoritos = useSelector((state: RootState) => state.favoritos.itens)
+
+  const favoritarProduto = (produto: Produto) => {
+    dispatch(favoritar(produto))
+  }
+
   return (
-    <Provider store={store}>
+    <>
       <GlobalStyle />
       <div className="container">
-        <Header />
-        <Produtos />
+        <Header favoritos={favoritos} />
+        <Produtos favoritos={favoritos} favoritar={favoritarProduto} />
       </div>
-    </Provider>
+    </>
   )
 }
 
